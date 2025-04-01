@@ -56,8 +56,7 @@ class userService:
             user = session.exec(statement).first()
             if not user:
                 return {'error': 'User not found'}
-
-            print('why that hell', user)
+            
             return {
                 'id': user.id,
                 'first_name': user.first_name,

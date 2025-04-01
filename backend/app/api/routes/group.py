@@ -32,9 +32,9 @@ def delete_group(group_id:int, user_id:int = Depends(validate_api_key), session:
     response = group_service.remove_group(group_id=group_id, user_id=user_id, session=session)
     return response
 
-@group_router.get('/get/{group_id}')
-def get_details_of_group(group_id: str,user_id:int = Depends(validate_api_key), session:Session = Depends(get_session)):
-    response = group_service.fetch_group_by_id(group_id=group_id, user_id=user_id, session=session)
+@group_router.get('/get/{group_name}')
+def get_details_of_group(group_name: str,user_id:int = Depends(validate_api_key), session:Session = Depends(get_session)):
+    response = group_service.fetch_group_all_details(group_name=group_name, user_id=user_id, session=session)
     return response
 
 @group_router.post('/addSub/In/{group_name}')
@@ -50,3 +50,7 @@ def remove_subscribers_from_group(sub_model: addOrRemoveSubscriber,group_name:st
     response = group_service.remove_subscriber_from_group(group_name=group_name, user_id=user_id, subscribers_list=sub_list, session=session)
     return response
 
+@group_router.post('/setTemplate/{template_name}/{group_name}')
+def set_template_for_group(template_name:str, group_name:str, user_id:int = Depends(validate_api_key), session:Session = Depends(get_session)):
+    response = group_service.set_group_template(template_name=template_name, group_name=group_name, user_id=user_id, session=session)
+    return response

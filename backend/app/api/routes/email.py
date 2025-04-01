@@ -19,14 +19,14 @@ def get_all_email_templates(user_id:int = Depends(validate_api_key), session: Se
     response = email_service.get_all_template(user_id=user_id, session=session)
     return response
 
-@email_router.get('get/{template_id}')
+@email_router.get('/getTemplate/{template_id}')
 def get_template_by_id(template_id:int, user_id:int = Depends(validate_api_key), session: Session = Depends(get_session)):
     response = email_service.get_template_by_id(template_id=template_id, user_id=user_id, session=session)
     return response
 
 @email_router.post('/createTemplate')
 def create_email_template(template_model:createOrUpdateEmail,user_id:int = Depends(validate_api_key),  session: Session = Depends(get_session)):
-    response = email_service.createTemplate(template_model=template_model, user_id=user_id, session=session)
+    response = email_service.create_template(template_model=template_model, user_id=user_id, session=session)
     return response
 
 @email_router.delete('/removeTemplate/{template_id}')

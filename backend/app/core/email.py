@@ -5,6 +5,8 @@ from app.models import SendEmailModel
 from app import constants
 
 
+
+## TO DO Update this method We will use free third party provider to send email
 def send_email(email_data:SendEmailModel):
     try:
         subject = email_data.subject
@@ -13,12 +15,12 @@ def send_email(email_data:SendEmailModel):
             try:
 
                 msg = EmailMessage()
-                msg["From"] = constants.EMAIL_ROOT
+                msg["From"] = constants.EMAIL_USER
                 msg["To"] = email
                 msg["Subject"] = subject
                 msg.set_content(body)
 
-                # Secure SMTP connection
+
                 context = ssl.create_default_context()
                 with smtplib.SMTP(constants.EMAIL_HOST, constants.EMAIL_PORT) as server:
                     server.starttls(context=context)
@@ -26,7 +28,7 @@ def send_email(email_data:SendEmailModel):
                     server.send_message(msg)
             
             except Exception as e:
-                print('Some error occured')
+                print('Some error occured', e)
 
         
     except Exception as e:

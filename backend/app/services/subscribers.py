@@ -31,32 +31,28 @@ class subscriberService:
                 'timedelta': sub.timedelta,
                 'group_id': sub.group_id
             })
-        return {'result': subscribers_list}
+        return {'subscribers': subscribers_list}
 
     def get_subscriber_by_id(self, subscriber_id, user_id, session):
         statement = select(Subscribers).where((Subscribers.id == subscriber_id) & (Subscribers.user_id == user_id))
         sub = session.exec(statement).first()
-        if not sub:
-            return {'error': f'No Subscriber exists with the subscriber id {subscriber_id}'}
-        
-        return {'result': sub}
+        return sub if sub else {}
     
     def remove_subscriber(self, sub_id, user_id, session):
-        result = self.get_subscriber_by_id(subscriber_id=sub_id, user_id=user_id, session=session)
-        if not result.get('result', None):
-            return {'result': f'No Subscriber exists with the subscriber id {sub_id}'}
+        sub = self.get_subscriber_by_id(subscriber_id=sub_id, user_id=user_id, session=session)
+        if not sub:
+            return {'error': f'No Subscriber exists with the subscriber id {sub_id}'}
         
 
-        session.delete(result.get('result'))
+        session.delete(sub)
         session.commit()
         return {'result': 'Subscriber has been removed successfully'}
     
     def update_subscriber(self, sub_model, sub_id, session, user_id):
-        result = self.get_subscriber_by_id(subscriber_id=sub_id,user_id=user_id, session=session)
-        if not result.get('result'):
+        sub = self.get_subscriber_by_id(subscriber_id=sub_id,user_id=user_id, session=session)
+        if not sub:
             return {'error': f"No Subscriber exists with the subscriber id {sub_id}"}
-        
-        sub = result.get('result')
+    
         sub_model_dict = sub_model.model_dump()
         sub.first_name = sub_model_dict.get('first_name', sub.first_name)
         sub.last_name = sub_model_dict.get('last_name', sub.last_name)
@@ -67,11 +63,10 @@ class subscriberService:
         return {'result': 'Subscriber has been updated sucessfully', 'subscriber': sub}
     
     def set_active_inactive(self,status, sub_id, user_id, session):
-        result = self.get_subscriber_by_id(subscriber_id=sub_id, user_id=user_id, session=session)
-        if not result.get('result', None):
+        sub = self.get_subscriber_by_id(subscriber_id=sub_id, user_id=user_id, session=session)
+        if not sub:
             return {'error': f'No subscriber exists with the subscriber id {sub_id}'}
-        
-        sub = result.get('result')
+    
         sub.is_active = status
         session.add(sub)
         session.commit()
@@ -81,7 +76,7 @@ class subscriberService:
     def get_subscriber_by_email(self, email, user_id, session):
         statement = select(Subscribers).where((Subscribers.email == email) & (Subscribers.user_id == user_id))
         subscriber = session.exec(statement).first()    
-        return subscriber if subscriber else None
+        return subscriber if subscriber else {}
     
         
     

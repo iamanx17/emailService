@@ -8,15 +8,20 @@ class emailService:
     def get_all_template(self, user_id, session):
         statement = select(EmailTemplate).where(EmailTemplate.user_id == user_id)
         email_templates = session.exec(statement).all()
-        return email_templates
+        return email_templates if email_templates else []
     
     def get_template_by_id(self, template_id,user_id, session):
         statement = select(EmailTemplate).where((EmailTemplate.id == template_id) & (EmailTemplate.user_id == user_id))
         template = session.exec(statement).first()
-        return template
+        return template if template else {}
+    
+    def get_template_by_name(self, template_name, user_id, session):
+        statement = select(EmailTemplate).where((EmailTemplate.template_name == template_name) & (EmailTemplate.user_id == user_id))
+        template = session.exec(statement).first()
+        return template if template else {}
 
     def create_template(self,template_model, user_id, session):
-        email = EmailTemplate(subject=template_model.subject, body=template_model.body, user_id=user_id)
+        email = EmailTemplate(template_name=template_model.template_name, subject=template_model.subject, body=template_model.body, user_id=user_id)
         session.add(email)
         session.commit()
         session.refresh(email)
