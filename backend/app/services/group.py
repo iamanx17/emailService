@@ -67,8 +67,7 @@ class groupService:
         if not group:
             return {'error': 'Group not Found'}
 
-        statement = select(Subscribers).where(Subscribers.email.in_(
-            subscriber_list), Subscribers.user_id == user_id)
+        statement = select(Subscribers).where(Subscribers.email.in_(subscriber_list), Subscribers.user_id == user_id)
         subscribers = session.exec(statement).all()
 
         for sub in subscribers:
@@ -97,8 +96,7 @@ class groupService:
         if not group:
             return {'error': 'Group has not found'}
 
-        statement = select(Subscribers).where(Subscribers.email.in_(
-            subscribers_list), Subscribers.user_id == user_id)
+        statement = select(Subscribers).where(Subscribers.email.in_(subscribers_list), Subscribers.user_id == user_id)
         subscribers = session.exec(statement).all()
 
         for sub in subscribers:

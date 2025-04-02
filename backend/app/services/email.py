@@ -2,7 +2,6 @@ from sqlmodel import select
 from app.models import EmailTemplate
 
 
-
 class emailService:
 
     def get_all_template(self, user_id, session):
@@ -21,6 +20,9 @@ class emailService:
         return template if template else {}
 
     def create_template(self,template_model, user_id, session):
+        if self.get_template_by_name(template_name=template_model.template_name, user_id=user_id, session=session):
+            return {'message': f'Template is already created with this name {template_model.template_name}'}
+
         email = EmailTemplate(template_name=template_model.template_name, subject=template_model.subject, body=template_model.body, user_id=user_id)
         session.add(email)
         session.commit()
@@ -30,7 +32,7 @@ class emailService:
     def remove_template(self, template_id, user_id, session):
         template = self.get_template_by_id(template_id=template_id, user_id=user_id, session=session)
         if not template:
-            return {'error': 'Template doesn;t exist'}
+            return {'error': 'Not Found'}
         
         session.delete(template)
         session.commit()

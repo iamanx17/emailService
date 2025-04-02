@@ -1,7 +1,5 @@
 from app.models import User
 from sqlmodel import select
-from app.core.error import print_error_in_code
-import traceback
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import jwt
@@ -20,35 +18,30 @@ class userService:
             session.add(user_model)
             session.commit()
             session.refresh(user_model)
+
             return {
                 'message': 'User has been created successfully',
                 'user': user_model
             }
-
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
         
 
     def get_user_by_api_key(self, api_key, session):
         try:
             statement = select(User).where(User.api_key == api_key)
             user = session.exec(statement).first()          
-
-            return user if user else None
+            return user if user else {}
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
 
     def check_user_by_email(self, email, session):
         try:
             statement = select(User).where(User.email == email)
             user = session.exec(statement).first()
-            return user if user else False
-
+            return user if user else {}
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
 
     def get_user_by_id(self, user_id, session):
         try:
@@ -56,7 +49,7 @@ class userService:
             user = session.exec(statement).first()
             if not user:
                 return {'error': 'User not found'}
-            
+
             return {
                 'id': user.id,
                 'first_name': user.first_name,
@@ -69,8 +62,7 @@ class userService:
             }
 
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
 
     def login_user(self, user_model, session):
         try:
@@ -95,8 +87,7 @@ class userService:
                 'access_token': f"Bearer {access_token}"
             }
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
 
     def remove_user(self, user_id, session):
         try:
@@ -111,8 +102,7 @@ class userService:
             return {'message': 'User has been deleted succcessfully'}
 
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
 
     def update_user(self, user_dict, session):
         try:
@@ -135,8 +125,7 @@ class userService:
             }
 
         except Exception as e:
-            error_code = traceback.print_exc()
-            return print_error_in_code(e, error_code)
+            return {'error': str(e)}
 
     def hash_password(self, password):
         return pwd_context.hash(password)

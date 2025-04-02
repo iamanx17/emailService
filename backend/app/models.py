@@ -7,8 +7,8 @@ import uuid
 #User who will signup, login, create group, add subscribers
 class User(SQLModel, table = True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    first_name: Optional[str] = Field(default='')
-    last_name: Optional[str] = Field(default='')
+    first_name: Optional[str] = Field(default=None)
+    last_name: Optional[str] = Field(default=None)
     email: EmailStr = Field(unique=True)
     password: Optional[str] = Field(default=None)
     api_key: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()))

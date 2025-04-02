@@ -9,7 +9,6 @@ class subscriberService:
         if self.get_subscriber_by_email(sub_model.email, user_id=user_id, session=session):
             return {'error': 'Subscriber already exists'}
 
-
         sub = Subscribers(first_name=sub_model.first_name, last_name=sub_model.last_name, email=sub_model.email,user_id=user_id)
         session.add(sub)
         session.commit()
